@@ -17,8 +17,6 @@ Compile the game using the provided Makefile. Make sure to adjust the paths in t
 make
 ```
 
-*NOTE:* Make sure you correct the path to the SDLs libraries in `Makefile`
-
 ## Running the Game
 
 To run the compiled executable and start the simple tennis game, use the following command in your terminal:

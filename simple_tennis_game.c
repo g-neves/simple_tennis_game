@@ -26,7 +26,6 @@ int main()
     int squareX = screenWidth/2;
     int squareY = screenHeight/10;
     int squareSize = 30;
-    int squareSpeed = 5;
     int squareVX = 5;
     int squareVY = 5;
     int racketWidth = 100;
@@ -120,7 +119,6 @@ int main()
         SDL_Delay(10);  // Add a small delay to reduce CPU usage
     }
 
-    // SDL_FreeSurface(screenSurface);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
