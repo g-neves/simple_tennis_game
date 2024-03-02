@@ -81,7 +81,8 @@ int main()
         // Checks if ball hit the racket
         if ((squareX < racketX + racketWidth) &&
             (squareX + squareSize > racketX) &&
-            (squareY + squareSize >= racketY)) {
+            (squareY + squareSize >= racketY) &&
+            (squareY <= racketY + racketHeight)) {
             squareVY = -squareVY;
         }
         else if (squareY + squareSize >= screenHeight) {
