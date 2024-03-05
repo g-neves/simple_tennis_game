@@ -1,6 +1,18 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+typedef struct {
+    int x;
+    int y;
+} Point;
+
+Point move(Point *point, Point velocity) {
+    point->x += velocity.x;
+    point->y += velocity.y;
+
+    return *point;
+}
+
 int main() 
 {
     int screenWidth = 800;
@@ -23,17 +35,15 @@ int main()
     SDL_Event event;
 
     // Initializing parameters
-    int squareX = screenWidth/2;
-    int squareY = screenHeight/10;
-    int squareSize = 30;
-    int squareVX = 5;
-    int squareVY = 5;
     int racketWidth = 100;
     int racketHeight = 30;
-    int racketX = screenWidth/2 - racketWidth/2;
-    int racketY = screenHeight*4/5;
-    int racketSpeed = 40;
-    
+    int squareSize = 30;
+    int racket_speed = 40;
+
+    Point ball = {screenWidth/2, screenHeight/10};
+    Point racket = {screenWidth/2 - racketWidth/2, screenHeight*4/5};
+    Point ball_velocity = {5, 5};
+
     int gameOver = 0;
 
     while (!quit) {
@@ -44,13 +54,13 @@ int main()
             if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_LEFT:
-                        if (racketX > 0) {
-                            racketX -= racketSpeed;
+                        if (racket.x > 0) {
+                            racket.x -= racket_speed;
                         }
                         break;
                     case SDLK_RIGHT:
-                        if (racketX + racketWidth < screenWidth) {
-                            racketX += racketSpeed;
+                        if (racket.x + racketWidth < screenWidth) {
+                            racket.x += racket_speed;
                         }
                         break;
                 }
@@ -58,33 +68,32 @@ int main()
         }
 
         // Do not allow racket to go beyond screen
-        if (racketX < 0) {
-            racketX = 0;
+        if (racket.x < 0) {
+            racket.x = 0;
         }
-        if (racketX + racketWidth > screenWidth) {
-            racketX = screenWidth - racketWidth;
+        if (racket.x + racketWidth > screenWidth) {
+            racket.x = screenWidth - racketWidth;
         }
 
         // Renewing "ball" position
-        squareX = squareX + squareVX; 
-        squareY = squareY + squareVY; 
+        ball = move(&ball, ball_velocity);
 
         // When the ball hits the corners of the screen
-        if ((squareX == screenWidth - squareSize) || (squareX == 0)) {
-            squareVX = -squareVX;
+        if ((ball.x == screenWidth - squareSize) || (ball.x == 0)) {
+            ball_velocity.x = -ball_velocity.x;
         }
-        if ((squareY ==  screenHeight - squareSize) || (squareY == 0)) {
-            squareVY = -squareVY;
+        if ((ball.y ==  screenHeight - squareSize) || (ball.y == 0)) {
+            ball_velocity.y = -ball_velocity.y;
         }
 
         // Checks if ball hit the racket
-        if ((squareX < racketX + racketWidth) &&
-            (squareX + squareSize > racketX) &&
-            (squareY + squareSize >= racketY) &&
-            (squareY <= racketY + racketHeight)) {
-            squareVY = -squareVY;
+        if ((ball.x < racket.x + racketWidth) &&
+            (ball.x + squareSize > racket.x) &&
+            (ball.y + squareSize >= racket.y) &&
+            (ball.y <= racket.y + racketHeight)) {
+            ball_velocity.y = -ball_velocity.y;
         }
-        else if (squareY + squareSize >= screenHeight) {
+        else if (ball.y + squareSize >= screenHeight) {
             gameOver = 1;
         }
 
@@ -93,12 +102,12 @@ int main()
 
         if (gameOver == 0) {
             // Rendering the "ball"
-            SDL_Rect squareRect = { squareX, squareY, squareSize, squareSize};
+            SDL_Rect squareRect = { ball.x, ball.y, squareSize, squareSize};
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderFillRect(renderer, &squareRect);
 
             // Rendering the "racket"
-            SDL_Rect racketRect = { racketX, racketY, racketWidth, racketHeight};
+            SDL_Rect racketRect = { racket.x, racket.y, racketWidth, racketHeight};
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
             SDL_RenderFillRect(renderer, &racketRect);
         }
