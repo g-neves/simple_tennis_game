@@ -6,11 +6,9 @@ typedef struct {
     int y;
 } Point;
 
-Point move(Point *point, Point velocity) {
-    point->x += velocity.x;
-    point->y += velocity.y;
-
-    return *point;
+void move(Point *point, Point *velocity) {
+    point->x += velocity->x;
+    point->y += velocity->y;
 }
 
 int main() 
@@ -76,7 +74,7 @@ int main()
         }
 
         // Renewing "ball" position
-        ball = move(&ball, ball_velocity);
+        move(&ball, &ball_velocity);
 
         // When the ball hits the corners of the screen
         if ((ball.x == screenWidth - squareSize) || (ball.x == 0)) {
